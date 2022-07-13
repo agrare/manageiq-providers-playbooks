@@ -1,0 +1,18 @@
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Gather all registered virtual machines
+    community.vmware.vmware_vm_info:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: false
+    delegate_to: localhost
+    register: vminfo
+  - name: Print VMs
+    debug:
+      msg: "{{ item.guest_name }}, {{ item.ip_address }}"
+    with_items:
+      - "{{ vminfo.virtual_machines }}"
+
